@@ -222,7 +222,7 @@ public class UI extends Application implements Runnable
         play=true;
         pause=false;
        while(mp.getMicrosecondPosition()<=mp.getMicrosecondLength()){
-           sd.setValue((double)mp.getMicrosecondPosition()*100/mp.getMicrosecondLength());
+           sd.setValue((double)mp.getMicrosecondPosition()*100/mp.getMicrosecondLength());//Logica barii
 
        }
 
@@ -268,8 +268,8 @@ public class UI extends Application implements Runnable
         player.setStyle("-fx-background-color: gray");
         meniu.setStyle("-fx-background-color:black");
         muzica2.setStyle("-fx-background-color:red;");
-        muzica.setVisible(true);
-        muzica2.setVisible(false);
+        muzica.setVisible(false);
+        muzica2.setVisible(true);
     }
 
   private void seteazaButoanePlayer(Button[] b,FileInputStream ic){
