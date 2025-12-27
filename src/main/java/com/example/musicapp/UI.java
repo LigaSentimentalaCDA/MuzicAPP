@@ -110,7 +110,7 @@ public class UI extends Application implements Runnable
                 icon6=new FileInputStream("C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/icons/forward.png");
               testaudio=new File("C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/icons/Test2.wav");
         }catch(FileNotFoundException e){
-            System.err.println("Pula prea chior");
+            System.err.println("Nu e");
             System.exit(1);
         }finally {
             test=new FileInputStream("C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/icons/i1.png");
