@@ -59,8 +59,6 @@ public class UI extends Application implements Runnable
          mz=new File[9];
          for(int i=0;i<9;i++){
 
-             //mz[i]=new File("C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/Muzica/m"+(i+1)+".wav");
-             //  System.out.println("C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/Muzica/m"+(i+1)+".wav");
              mz[i]=new File("C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/Muzica/m"+(i+1)+".wav");
          }
          try{
@@ -261,7 +259,11 @@ public class UI extends Application implements Runnable
 
 
                }
+               System.out.println("Thread-ul"+k+"Este intrerupt");
                mp.stop();
+
+
+
 
 
 
@@ -519,15 +521,14 @@ public class UI extends Application implements Runnable
   }
   private void seteazaMuzica(File mz) throws UnsupportedAudioFileException,IOException,LineUnavailableException,InterruptedException{
       main();
-
         if(g.size()>=2){
          if(g.get(g.size()-2).isInterrupted()==false){
              g.get(g.size()-2).interrupt();
+             Thread.sleep(200);
 
 
          }
         }
-      //  System.out.println(mz.getAbsolutePath());
       audio=AudioSystem.getAudioInputStream(mz.getAbsoluteFile());
       mp=AudioSystem.getClip();
       sd.setValue(0);
