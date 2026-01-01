@@ -31,28 +31,38 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import javafx.scene.Node;
+
 public class UI extends Application implements Runnable
-{     Boolean play,pause;
+{  static   Boolean play,pause;
       final String style="-fx-background-color: transparent;-fx-background-radius: 10;-fx-border-color:transparent;-fx-border-radius:10;";
        final String style2="-fx-background-color: gray;-fx-background-radius: 10;-fx-border-color:transparent;-fx-border-radius:10;";
+       final String []CBt={"Acasa","Exploreaza","Biblioteca"};
          String sizepath;
-       Slider sd;
-    Clip mp;
-    AudioInputStream audio;
+    static   Slider sd=new Slider();
+   static Clip mp;
+   static AudioInputStream audio;
+
        boolean ok;
-     Thread f;
+      static ArrayList<Thread>g=new ArrayList<Thread>();
      FileInputStream[]fs;
      Image[]img;
      ImageView[] imgpz;
-     char[][]path;
+      File[]mz;
     Pane muzica2contentp1;
      public UI(){
+         mz=new File[9];
          muzica2contentp1=new Pane();
          muzica2contentp1.setPrefSize(500,300);
          fs=new FileInputStream[2];
          img=new Image[2];
          imgpz=new ImageView[2];
+         mz=new File[9];
+         for(int i=0;i<9;i++){
 
+             //mz[i]=new File("C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/Muzica/m"+(i+1)+".wav");
+             //  System.out.println("C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/Muzica/m"+(i+1)+".wav");
+             mz[i]=new File("C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/Muzica/m"+(i+1)+".wav");
+         }
          try{
              fs[0]=new FileInputStream("C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/icons/play.png");
              fs[1]=new FileInputStream("C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/icons/pause.png");
@@ -65,14 +75,20 @@ public class UI extends Application implements Runnable
          img[1]=new Image(fs[1]);
          imgpz[0]=new ImageView(img[0]);
          imgpz[1]=new ImageView(img[1]);
-         sd=new Slider();
-         f=new Thread(this);
          sd.applyCss();
          sd.layout();
 
      }
+     public UI(AudioInputStream audio,Clip mp){
+         super();
+         this.audio=audio;
+         this.mp=mp;
+
+     }
+
     @Override
     public void start(Stage fereastra) throws Exception{
+
         FileInputStream test,icon2,icon3,test2,icon4,icon5,icon6,icon32;
         File testaudio;
         GridPane muzica2content=new GridPane();
@@ -142,7 +158,7 @@ public class UI extends Application implements Runnable
             icon6=new FileInputStream("C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/icons/forward.png");
             icon32=new FileInputStream("C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/icons/play.png");
         }
-        seteazaButoanePlayer(bmz,icon3);
+
         Image ic3=new Image(icon32);
         Image ic4=new Image(icon4);
         Image ic5=new Image(icon5);
@@ -154,10 +170,6 @@ public class UI extends Application implements Runnable
         m2p2b1.setGraphic(pz3);
         m2p2b2.setGraphic(pz5);
         m2p2b3.setGraphic(pz6);
-
-        audio=AudioSystem.getAudioInputStream(testaudio.getAbsoluteFile());
-        mp=AudioSystem.getClip();
-        mp.open(audio);
         Pane root=new Pane();
         Pane meniu =new Pane();
         Pane player=new Pane();
@@ -167,10 +179,11 @@ public class UI extends Application implements Runnable
         Image poza2=new Image(icon2);
         ImageView[]imageView=new ImageView[3];
          Panels(muzica,player,meniu,muzica2);
+        seteazaButoanePlayer(bmz,icon3,muzica,muzica2);
           GridPane gP=new GridPane();
           gP.setPrefSize(200,100);
           for(int i=0;i<3;i++){
-              butoane[i]=new Button("Home");
+              butoane[i]=new Button(CBt[i]);
                imageView[i]=new ImageView(poza);
               butoane[i].setPrefSize(200,30);
               butoane[i].setGraphic(imageView[i]);
@@ -179,6 +192,7 @@ public class UI extends Application implements Runnable
                   case 0:{
                       butoane[0].setOnMouseEntered(e->{schimba1(butoane[0]);});
                       butoane[0].setOnMouseExited(e->{schimbai1(butoane[0]);});
+                      butoane[0].setOnMouseClicked(e->{home(muzica2,muzica);});
                       break;
                   }
                   case 1:{
@@ -229,26 +243,38 @@ public class UI extends Application implements Runnable
         fereastra.setResizable(false);
         fereastra.setTitle("MSSPlayer");
      fereastra.show();
-      //  f.start();
+
 
 
 
     }
     @Override
-    public void run(){
-        mp.start();
-        play=true;
-        pause=false;
-       while(mp.getMicrosecondPosition()<=mp.getMicrosecondLength()){
-           sd.setValue((double)mp.getMicrosecondPosition()*100/mp.getMicrosecondLength());//Logica barii
+    public void run() {
+           int k=g.size()-1;
+           play = true;
+           pause = false;
+               mp.start();
+               while (mp.getMicrosecondPosition() <= mp.getMicrosecondLength()&&g.get(k).isInterrupted()==false) {
 
-       }
+                   sd.setValue((double) mp.getMicrosecondPosition() * 100 / mp.getMicrosecondLength());
+
+
+
+               }
+               mp.stop();
+
+
+
+
+
+
 
     }
 
-    public static void main(String[] args){
+    public static void main(){
 
-       launch(args);
+         g.add(new Thread(new UI(audio,mp)));
+
     }
     private void schimba1(Button x){
         x.setStyle(style2);
@@ -290,9 +316,10 @@ public class UI extends Application implements Runnable
         muzica2.setVisible(false);
     }
 
-  private void seteazaButoanePlayer(Button[] b,FileInputStream ic){
+  private void seteazaButoanePlayer(Button[] b,FileInputStream ic,Pane muzica,Pane muzica2) throws UnsupportedAudioFileException,IOException,LineUnavailableException,InterruptedException {
         Image poza3=new Image(ic);
         ImageView[]icon=new ImageView[9];
+
         for(int i=0;i<b.length;i++){
             icon[i]=new ImageView(poza3);
             b[i]=new Button();
@@ -300,30 +327,173 @@ public class UI extends Application implements Runnable
            switch(i){
                case 0:
                    b[i].setStyle("-fx-background-image: url('file:C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/FolderConvertit/baner1.jpg');-fx-background-position: cover;");
+
+                    b[i].setOnMouseClicked(e->{
+                        try{
+                            btn1(mz[0],muzica2,muzica);
+                        }catch(IOException m){
+
+                        }catch(UnsupportedAudioFileException f){
+
+                        }
+                        catch(LineUnavailableException l){
+
+                        }
+                        catch(InterruptedException ie){
+
+                        }
+                       });
+
                    break;
                case 1:
                    b[i].setStyle("-fx-background-image: url('file:C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/FolderConvertit/baner2.jpg');-fx-background-position: cover;");
+                   b[i].setOnMouseClicked(e->{
+                       try{
+                           btn2(mz[1],muzica2,muzica);
+                       }
+                       catch(IOException m){
+
+                       }catch(UnsupportedAudioFileException f){
+
+                       }
+                       catch(LineUnavailableException l){
+
+                       }
+                       catch(InterruptedException ie){
+
+                       }
+
+                   });
                    break;
                case 2:
                    b[i].setStyle("-fx-background-image: url('file:C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/FolderConvertit/baner3.jpg');-fx-background-position: cover;");
+                   b[i].setOnMouseClicked(e->{try{
+                       btn3(mz[2],muzica2,muzica);
+                   }catch(IOException m){
+
+                   }catch(UnsupportedAudioFileException f){
+
+                   }
+                   catch(LineUnavailableException l){
+
+                   }
+                   catch(InterruptedException ie){
+
+                   }
+
+                   });
                    break;
                case 3:
                    b[i].setStyle("-fx-background-image: url('file:C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/FolderConvertit/baner4.jpg');-fx-background-position: cover;");
+                   b[i].setOnMouseClicked(e->{try{
+                       btn4(mz[3],muzica2,muzica);
+                   }catch(IOException m){
+
+                   }catch(UnsupportedAudioFileException f){
+
+                   }
+                   catch(LineUnavailableException l){
+
+                   }
+                   catch(InterruptedException ie){
+
+                   }
+
+                   });
                    break;
                case 4:
                    b[i].setStyle("-fx-background-image: url('file:C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/FolderConvertit/baner5.jpg');-fx-background-position: cover;");
+                   b[i].setOnMouseClicked(e->{
+                      try{
+                          btn5(mz[4],muzica2,muzica);
+                      }catch(IOException m){
+
+                      }catch(UnsupportedAudioFileException f){
+
+                      }
+                      catch(LineUnavailableException l){
+
+                      }
+                      catch(InterruptedException ie){
+
+                      }
+
+                   });
                    break;
                case 5:
                    b[i].setStyle("-fx-background-image: url('file:C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/FolderConvertit/baner6.jpg');-fx-background-position: cover;");
+                   b[i].setOnMouseClicked(e->{
+                       try{
+                           btn6(mz[5],muzica2,muzica);
+                       }catch(IOException m){
+
+                       }catch(UnsupportedAudioFileException f){
+
+                       }
+                       catch(LineUnavailableException l){
+
+                       }
+                       catch(InterruptedException ie){
+
+                       }
+
+                   });
                    break;
                case 6:
                    b[i].setStyle("-fx-background-image: url('file:C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/FolderConvertit/baner7.jpg');-fx-background-position: cover;");
+                   b[i].setOnMouseClicked(e->{
+                       try{
+                           btn7(mz[6],muzica2,muzica);
+                       }catch(IOException m){
+
+                       }catch(UnsupportedAudioFileException f){
+
+                       }
+                       catch(LineUnavailableException l){
+
+                       }
+                       catch(InterruptedException ie){
+
+                       }
+
+                   });
                    break;
                case 7:
                    b[i].setStyle("-fx-background-image: url('file:C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/FolderConvertit/baner8.jpg');-fx-background-position: cover;");
+                   b[i].setOnMouseClicked(e->{try{
+                       btn8(mz[7],muzica2,muzica);
+                   }catch(IOException m){
+
+                   }catch(UnsupportedAudioFileException f){
+
+                   }
+                   catch(LineUnavailableException l){
+
+                   }
+                   catch(InterruptedException ie){
+
+                   }
+
+                   });
                    break;
                case 8:
                    b[i].setStyle("-fx-background-image: url('file:C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/FolderConvertit/baner9.jpg');-fx-background-position: cover;");
+                   b[i].setOnMouseClicked(e->{
+                      try{
+                          btn9(mz[8],muzica2,muzica);
+                      }catch(IOException m){
+
+                      }catch(UnsupportedAudioFileException f){
+
+                      }
+                      catch(LineUnavailableException l){
+
+                      }
+                      catch(InterruptedException ie){
+
+                      }
+
+                   });
                    break;
            }
            b[i].setGraphic(icon[i]);
@@ -347,72 +517,90 @@ public class UI extends Application implements Runnable
          }
 
   }
-  private void seteazaMuzica(File mz) throws UnsupportedAudioFileException,IOException,LineUnavailableException{
+  private void seteazaMuzica(File mz) throws UnsupportedAudioFileException,IOException,LineUnavailableException,InterruptedException{
+      main();
+
+        if(g.size()>=2){
+         if(g.get(g.size()-2).isInterrupted()==false){
+             g.get(g.size()-2).interrupt();
+
+
+         }
+        }
+      //  System.out.println(mz.getAbsolutePath());
       audio=AudioSystem.getAudioInputStream(mz.getAbsoluteFile());
       mp=AudioSystem.getClip();
+      sd.setValue(0);
       mp.open(audio);
+
+      g.get(g.size()-1).start();
+
+
+
   }
-  private void btn1(File g,Pane pn,Pane pm) throws UnsupportedAudioFileException,IOException,LineUnavailableException{
+  private void btn1(File g,Pane pn,Pane pm) throws UnsupportedAudioFileException,IOException,LineUnavailableException,InterruptedException{
          seteazaMuzica(g);
-      muzica2contentp1.setStyle("-fx-background-image url('file:C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/FolderConvertit/baner1.jpg')");
+      muzica2contentp1.setStyle("-fx-background-image:url('file:C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/FolderConvertit/baner1.jpg');-fx-background-repeat: no-repeat;-fx-background-size: cover;");
       pm.setVisible(false);
       pn.setVisible(true);
   }
-  private void btn2(File g,Pane pn,Pane pm) throws UnsupportedAudioFileException,IOException,LineUnavailableException{
+  private void btn2(File g,Pane pn,Pane pm) throws UnsupportedAudioFileException,IOException,LineUnavailableException,InterruptedException{
          seteazaMuzica(g);
-      muzica2contentp1.setStyle("-fx-background-image url('file:C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/FolderConvertit/baner2.jpg')");
+      muzica2contentp1.setStyle("-fx-background-image:url('file:C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/FolderConvertit/baner2.jpg');-fx-background-repeat: no-repeat;-fx-background-size: cover;");
       pm.setVisible(false);
       pn.setVisible(true);
 
   }
-  private void btn3(File g,Pane pn,Pane pm) throws UnsupportedAudioFileException,IOException,LineUnavailableException{
+  private void btn3(File g,Pane pn,Pane pm) throws UnsupportedAudioFileException,IOException,LineUnavailableException,InterruptedException{
          seteazaMuzica(g);
-      muzica2contentp1.setStyle("-fx-background-image url('file:C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/FolderConvertit/baner3.jpg')");
+      muzica2contentp1.setStyle("-fx-background-image:url('file:C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/FolderConvertit/baner3.jpg');-fx-background-repeat: no-repeat;-fx-background-size: cover;");
       pm.setVisible(false);
       pn.setVisible(true);
 
   }
-  private void btn4(File g,Pane pn,Pane pm) throws UnsupportedAudioFileException,IOException,LineUnavailableException{
+  private void btn4(File g,Pane pn,Pane pm) throws UnsupportedAudioFileException,IOException,LineUnavailableException,InterruptedException{
         seteazaMuzica(g);
-      muzica2contentp1.setStyle("-fx-background-image url('file:C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/FolderConvertit/baner4.jpg')");
+      muzica2contentp1.setStyle("-fx-background-image:url('file:C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/FolderConvertit/baner4.jpg');-fx-background-repeat: no-repeat;-fx-background-size: cover;");
         pm.setVisible(false);
       pn.setVisible(true);
 
 
     }
-    private void btn5(File g,Pane pn,Pane pm) throws UnsupportedAudioFileException,IOException,LineUnavailableException{
+    private void btn5(File g,Pane pn,Pane pm) throws UnsupportedAudioFileException,IOException,LineUnavailableException,InterruptedException{
         seteazaMuzica(g);
-        muzica2contentp1.setStyle("-fx-background-image url('file:C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/FolderConvertit/baner5.jpg')");
+        muzica2contentp1.setStyle("-fx-background-image:url('file:C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/FolderConvertit/baner5.jpg');-fx-background-repeat: no-repeat;-fx-background-size: cover;");
         pm.setVisible(false);
         pn.setVisible(true);
 
     }
-    private void btn6(File g,Pane pn,Pane pm) throws UnsupportedAudioFileException,IOException,LineUnavailableException{
+    private void btn6(File g,Pane pn,Pane pm) throws UnsupportedAudioFileException,IOException,LineUnavailableException,InterruptedException{
         seteazaMuzica(g);
-        muzica2contentp1.setStyle("-fx-background-image url('file:C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/FolderConvertit/baner6.jpg')");
+        muzica2contentp1.setStyle("-fx-background-image:url('file:C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/FolderConvertit/baner6.jpg');-fx-background-repeat: no-repeat;-fx-background-size: cover;");
         pm.setVisible(false);
         pn.setVisible(true);
     }
-    private void btn7(File g,Pane pn,Pane pm) throws UnsupportedAudioFileException,IOException,LineUnavailableException{
+    private void btn7(File g,Pane pn,Pane pm) throws UnsupportedAudioFileException,IOException,LineUnavailableException,InterruptedException{
         seteazaMuzica(g);
-        muzica2contentp1.setStyle("-fx-background-image url('file:C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/FolderConvertit/baner7.jpg')");
+        muzica2contentp1.setStyle("-fx-background-image:url('file:C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/FolderConvertit/baner7.jpg');-fx-background-repeat: no-repeat;-fx-background-size: cover;");
         pm.setVisible(false);
         pn.setVisible(true);
     }
-    private void btn8(File g,Pane pn,Pane pm) throws UnsupportedAudioFileException,IOException,LineUnavailableException{
+    private void btn8(File g,Pane pn,Pane pm) throws UnsupportedAudioFileException,IOException,LineUnavailableException,InterruptedException{
         seteazaMuzica(g);
-        muzica2contentp1.setStyle("-fx-background-image url('file:C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/FolderConvertit/baner8.jpg')");
+        muzica2contentp1.setStyle("-fx-background-image:url('file:C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/FolderConvertit/baner8.jpg');-fx-background-repeat: no-repeat;-fx-background-size: cover;");
         pm.setVisible(false);
-
         pn.setVisible(true);
     }
-    private void btn9(File g,Pane pn,Pane pm) throws UnsupportedAudioFileException,IOException,LineUnavailableException{
+    private void btn9(File g,Pane pn,Pane pm) throws UnsupportedAudioFileException,IOException,LineUnavailableException,InterruptedException{
          seteazaMuzica(g);
-        muzica2contentp1.setStyle("-fx-background-image url('file:C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/FolderConvertit/baner8.jpg')");
+        muzica2contentp1.setStyle("-fx-background-image:url('file:C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/FolderConvertit/baner9.jpg');-fx-background-repeat: no-repeat;-fx-background-size: cover;");
         pm.setVisible(false);
         pn.setVisible(true);
     }
-
+    private void home(Pane pn,Pane pm){
+         pn.setVisible(false);
+         pm.setVisible(true);
+    }
 
 }
 
