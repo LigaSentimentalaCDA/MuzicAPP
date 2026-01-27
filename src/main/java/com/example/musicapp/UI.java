@@ -1,5 +1,6 @@
 package com.example.musicapp;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
@@ -256,17 +257,25 @@ public class UI extends Application implements Runnable
     }
     @Override
     public void run() {
-           int k=g.size()-1;
-               mp.start();
-               while (mp.getMicrosecondPosition() <= mp.getMicrosecondLength()&&g.get(k).isInterrupted()==false) {
 
-                   sd.setValue((double) mp.getMicrosecondPosition() * 100 / mp.getMicrosecondLength());
+        int k = g.size() - 1;
+        mp.start();
+        while (mp.getMicrosecondPosition() <= mp.getMicrosecondLength() && g.get(k).isInterrupted() == false) {
+            Platform.runLater(()->{
+                sd.setValue((double) mp.getMicrosecondPosition() * 100 / mp.getMicrosecondLength());
+            });
+            try{
+                Thread.sleep(16);
+            }catch(InterruptedException e){
+                break;
+            }
 
 
 
-               }
 
-               mp.stop();
+        }
+
+        mp.stop();
 
 
 
