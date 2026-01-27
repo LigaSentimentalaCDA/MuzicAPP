@@ -37,11 +37,11 @@ public class UI extends Application implements Runnable
       final String style="-fx-background-color: transparent;-fx-background-radius: 10;-fx-border-color:transparent;-fx-border-radius:10;";
        final String style2="-fx-background-color: gray;-fx-background-radius: 10;-fx-border-color:transparent;-fx-border-radius:10;";
        final String []CBt={"Acasa","Exploreaza","Biblioteca"};
+
          String sizepath;
     static   Slider sd=new Slider();
    static Clip mp;
    static AudioInputStream audio;
-
        boolean ok;
       static ArrayList<Thread>g=new ArrayList<Thread>();
      FileInputStream[]fs;
@@ -79,6 +79,7 @@ public class UI extends Application implements Runnable
      }
      public UI(AudioInputStream audio,Clip mp){
          super();
+
          this.audio=audio;
          this.mp=mp;
 
@@ -87,7 +88,8 @@ public class UI extends Application implements Runnable
     @Override
     public void start(Stage fereastra) throws Exception{
 
-        FileInputStream test,icon2,icon3,test2,icon4,icon5,icon6,icon32;
+        FileInputStream icon2,icon3,test2,icon4,icon5,icon6,icon32;
+        FileInputStream[] icon1=new FileInputStream[3];
         File testaudio;
         GridPane muzica2content=new GridPane();
         Pane muzica2contentp2=new Pane();
@@ -133,7 +135,9 @@ public class UI extends Application implements Runnable
       search.setPromptText("    Cauta Muzica and other shits");
 
         try{
-             test=new FileInputStream("C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/icons/i1.png");
+             icon1[0]=new FileInputStream("C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/icons/i1.png");
+            icon1[1]=new FileInputStream("C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/icons/i1.png");
+            icon1[2]=new FileInputStream("C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/icons/i1.png");
              icon2=new FileInputStream("C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/icons/plus.png");
              icon3=new FileInputStream("C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/icons/play.png");
              test2=new FileInputStream("C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/icons/MSS.jpg");
@@ -146,7 +150,9 @@ public class UI extends Application implements Runnable
             System.err.println("Nu e");
             System.exit(1);
         }finally {
-            test=new FileInputStream("C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/icons/i1.png");
+            icon1[0]=new FileInputStream("C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/icons/i1.png");
+            icon1[1]=new FileInputStream("C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/icons/i1.png");
+            icon1[2]=new FileInputStream("C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/icons/i1.png");
             icon2=new FileInputStream("C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/icons/plus.png");
             icon3=new FileInputStream("C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/icons/play.png");
             test2=new FileInputStream("C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/icons/MSS.jpg");
@@ -173,7 +179,7 @@ public class UI extends Application implements Runnable
         Pane player=new Pane();
         Pane muzica =new Pane();
         BorderPane muzica2=new BorderPane();
-        Image poza=new Image(test);
+        Image poza=new Image(icon1[0]);
         Image poza2=new Image(icon2);
         ImageView[]imageView=new ImageView[3];
          Panels(muzica,player,meniu,muzica2);
@@ -240,6 +246,7 @@ public class UI extends Application implements Runnable
         fereastra.setScene(content);
         fereastra.setResizable(false);
         fereastra.setTitle("MSSPlayer");
+
      fereastra.show();
 
 
@@ -259,7 +266,7 @@ public class UI extends Application implements Runnable
 
 
                }
-               System.out.println("Thread-ul"+k+"Este intrerupt");
+
                mp.stop();
 
 
@@ -273,10 +280,14 @@ public class UI extends Application implements Runnable
 
     }
 
-    public static void main(){
+    public static void main(String[] args) {
 
-         g.add(new Thread(new UI(audio,mp)));
+         launch(args);
 
+
+    }
+    public static void main2(){
+        g.add(new Thread(new UI(audio,mp)));
     }
     private void schimba1(Button x){
         x.setStyle(style2);
@@ -520,7 +531,7 @@ public class UI extends Application implements Runnable
 
   }
   private void seteazaMuzica(File mz) throws UnsupportedAudioFileException,IOException,LineUnavailableException,InterruptedException{
-      main();
+      main2();
         if(g.size()>=2){
          if(g.get(g.size()-2).isInterrupted()==false){
              g.get(g.size()-2).interrupt();
