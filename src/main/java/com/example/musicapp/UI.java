@@ -1,5 +1,4 @@
 package com.example.musicapp;
-
 import javafx.application.Application;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -13,7 +12,6 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.control.Slider;
-
 import javax.swing.text.Position;
 import java.awt.*;
 import java.io.FileInputStream;
@@ -33,11 +31,11 @@ import java.util.*;
 import javafx.scene.Node;
 
 public class UI extends Application implements Runnable
-{  static   Boolean play,pause;
+{  static   Boolean play=true;
+    static Boolean pause=false;
       final String style="-fx-background-color: transparent;-fx-background-radius: 10;-fx-border-color:transparent;-fx-border-radius:10;";
        final String style2="-fx-background-color: gray;-fx-background-radius: 10;-fx-border-color:transparent;-fx-border-radius:10;";
-       final String []CBt={"Acasa","Exploreaza","Biblioteca"};
-
+       final String []CBt={"Acasa        ", "Exploreaza"," Biblioteca"};
          String sizepath;
     static   Slider sd=new Slider();
    static Clip mp;
@@ -78,10 +76,11 @@ public class UI extends Application implements Runnable
 
      }
      public UI(AudioInputStream audio,Clip mp){
-         super();
 
          this.audio=audio;
          this.mp=mp;
+         sd.applyCss();
+         sd.layout();
 
      }
 
@@ -90,7 +89,6 @@ public class UI extends Application implements Runnable
 
         FileInputStream icon2,icon3,test2,icon4,icon5,icon6,icon32;
         FileInputStream[] icon1=new FileInputStream[3];
-        File testaudio;
         GridPane muzica2content=new GridPane();
         Pane muzica2contentp2=new Pane();
        Button m2p2b1=new Button();
@@ -117,7 +115,7 @@ public class UI extends Application implements Runnable
         muzica2content.setMaxSize(500,500);
         Button[]butoane=new Button[3];
         Button[]bmz=new Button[9];
-        Button playlist=new Button("Playlist");
+        Button playlist=new Button("Playlist     ");
         playlist.setStyle("-fx-background-radius: 30;-fx-background-color: gray;");
         playlist.setPrefSize(200,50);
         StackPane configs=new StackPane();
@@ -135,43 +133,45 @@ public class UI extends Application implements Runnable
       search.setPromptText("    Cauta Muzica and other shits");
 
         try{
-             icon1[0]=new FileInputStream("C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/icons/i1.png");
-            icon1[1]=new FileInputStream("C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/icons/i1.png");
-            icon1[2]=new FileInputStream("C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/icons/i1.png");
+             icon1[0]=new FileInputStream("C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/icons/home.png");
+            icon1[1]=new FileInputStream("C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/icons/explore.png");
+            icon1[2]=new FileInputStream("C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/icons/bookmark.png");
              icon2=new FileInputStream("C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/icons/plus.png");
              icon3=new FileInputStream("C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/icons/play.png");
              test2=new FileInputStream("C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/icons/MSS.jpg");
               icon4=new FileInputStream("C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/icons/pause.png");
               icon5=new FileInputStream("C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/icons/back.png");
                 icon6=new FileInputStream("C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/icons/forward.png");
-              testaudio=new File("C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/icons/Test2.wav");
+
             icon32=new FileInputStream("C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/icons/play.png");
+
         }catch(FileNotFoundException e){
             System.err.println("Nu e");
             System.exit(1);
         }finally {
-            icon1[0]=new FileInputStream("C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/icons/i1.png");
-            icon1[1]=new FileInputStream("C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/icons/i1.png");
-            icon1[2]=new FileInputStream("C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/icons/i1.png");
+            icon1[0]=new FileInputStream("C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/icons/home.png");
+            icon1[1]=new FileInputStream("C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/icons/explore.png");
+            icon1[2]=new FileInputStream("C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/icons/bookmark.png");
             icon2=new FileInputStream("C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/icons/plus.png");
             icon3=new FileInputStream("C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/icons/play.png");
             test2=new FileInputStream("C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/icons/MSS.jpg");
-            testaudio=new File("C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/icons/Test2.wav");
             icon4=new FileInputStream("C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/icons/pause.png");
             icon5=new FileInputStream("C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/icons/back.png");
             icon6=new FileInputStream("C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/icons/forward.png");
             icon32=new FileInputStream("C:/Users/AlexandruFlorin/IdeaProjects/MusicAPP/src/main/java/com/example/musicapp/icons/play.png");
+
         }
 
         Image ic3=new Image(icon32);
         Image ic4=new Image(icon4);
         Image ic5=new Image(icon5);
         Image ic6=new Image(icon6);
+
         ImageView pz3=new ImageView(ic3);
         ImageView pz4=new ImageView(ic4);
         ImageView pz5=new ImageView(ic5);
         ImageView pz6=new ImageView(ic6);
-        m2p2b1.setGraphic(pz3);
+        m2p2b1.setGraphic(pz4);
         m2p2b2.setGraphic(pz5);
         m2p2b3.setGraphic(pz6);
         Pane root=new Pane();
@@ -179,7 +179,7 @@ public class UI extends Application implements Runnable
         Pane player=new Pane();
         Pane muzica =new Pane();
         BorderPane muzica2=new BorderPane();
-        Image poza=new Image(icon1[0]);
+        Image[] poza=new Image[3];
         Image poza2=new Image(icon2);
         ImageView[]imageView=new ImageView[3];
          Panels(muzica,player,meniu,muzica2);
@@ -188,7 +188,8 @@ public class UI extends Application implements Runnable
           gP.setPrefSize(200,100);
           for(int i=0;i<3;i++){
               butoane[i]=new Button(CBt[i]);
-               imageView[i]=new ImageView(poza);
+               poza[i]=new Image(icon1[i]);
+                imageView[i]=new ImageView(poza[i]);
               butoane[i].setPrefSize(200,30);
               butoane[i].setGraphic(imageView[i]);
               butoane[i].setStyle(style);
@@ -256,8 +257,6 @@ public class UI extends Application implements Runnable
     @Override
     public void run() {
            int k=g.size()-1;
-           play = true;
-           pause = false;
                mp.start();
                while (mp.getMicrosecondPosition() <= mp.getMicrosecondLength()&&g.get(k).isInterrupted()==false) {
 
@@ -517,16 +516,16 @@ public class UI extends Application implements Runnable
 
   }
   private void play(Button b){
-         if(play==true){
+         if(pause==true){
              mp.stop();
              b.setGraphic(imgpz[0]);
-             play=false;
-             pause=true;
-         }else if(pause==true){
-             mp.start();
              play=true;
-             b.setGraphic(imgpz[1]);
              pause=false;
+         }else if(play==true){
+             mp.start();
+             play=false;
+             b.setGraphic(imgpz[1]);
+             pause=true;
          }
 
   }
@@ -544,7 +543,6 @@ public class UI extends Application implements Runnable
       mp=AudioSystem.getClip();
       sd.setValue(0);
       mp.open(audio);
-
       g.get(g.size()-1).start();
 
 
